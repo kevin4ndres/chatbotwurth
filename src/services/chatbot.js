@@ -440,13 +440,15 @@ const TEXTS = {
   welcome: [
     '¡Hola! 👋 Soy *Informatica Bot*, tu asistente de informatica.',
     '',
-    '¿Sobre que tema quieres aprender hoy?',
+    '¿Que tipo de problema tienes?',
     '',
-    '1️⃣ 🖥️ Hardware',
-    '2️⃣ 💻 Software',
-    '3️⃣ 🌐 Redes e Internet',
-    '4️⃣ 👨‍💻 Programacion',
-    '5️⃣ 🔐 Seguridad Informatica',
+    '1️⃣ 🔑 Problemas con su clave',
+    '2️⃣ 🌐 Problemas con Intranet',
+    '3️⃣ 🖥️ Hardware',
+    '4️⃣ 💻 Software',
+    '5️⃣ 📡 Redes e Internet',
+    '6️⃣ 👨‍💻 Programacion',
+    '7️⃣ 🔐 Seguridad Informatica',
     '',
     '_Escribe el numero de la opcion que deseas._',
   ].join('\n'),
@@ -460,13 +462,92 @@ const TEXTS = {
   ].join('\n'),
 };
 
+// Tipos de claves para el submenu
+const CLAVES = {
+  1: {
+    name: 'Clave Correo',
+    answer: [
+      '📧 *Problema con Clave de Correo*',
+      '',
+      'Para restablecer tu clave de correo:',
+      '1. Contacta al area de informatica',
+      '2. Indica tu nombre completo y usuario',
+      '3. Se te asignara una clave temporal',
+      '',
+      '⚠️ Recuerda cambiar la clave temporal por una personal al ingresar.',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+  2: {
+    name: 'Clave WSL Token Password',
+    answer: [
+      '🔐 *Problema con Clave WSL Token Password*',
+      '',
+      'Para restablecer tu token/password de WSL:',
+      '1. Ingresa al portal de WSL',
+      '2. Selecciona "Olvidé mi contraseña"',
+      '3. Si no puedes, contacta al area de informatica con tu usuario',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+  3: {
+    name: 'Clave Intranet',
+    answer: [
+      '🌐 *Problema con Clave de Intranet*',
+      '',
+      'Para restablecer tu clave de Intranet:',
+      '1. Contacta al area de informatica',
+      '2. Proporciona tu RUT y nombre completo',
+      '3. Se generara una nueva clave temporal',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+  4: {
+    name: 'Clave DBNet',
+    answer: [
+      '🗄️ *Problema con Clave DBNet*',
+      '',
+      'Para restablecer tu clave de DBNet:',
+      '1. Contacta al area de informatica',
+      '2. Indica tu usuario de DBNet',
+      '3. Se restablecera tu acceso',
+      '',
+      '⚠️ No compartas tu clave de DBNet con terceros.',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+};
+
+// Respuesta para problemas de Intranet
+const INTRANET_ANSWER = [
+  '🌐 *Problemas con Intranet*',
+  '',
+  'Problemas comunes y soluciones:',
+  '',
+  '• *No carga la pagina:* Verifica tu conexion a la red corporativa.',
+  '• *Error de acceso:* Asegurate de estar conectado a la VPN si estas fuera de la oficina.',
+  '• *Pagina en blanco:* Limpia la cache del navegador (Ctrl+Shift+Supr).',
+  '• *Error 500:* El servidor puede estar en mantenimiento, intenta mas tarde.',
+  '',
+  'Si el problema persiste, contacta al area de informatica indicando:',
+  '• Descripcion del error',
+  '• Captura de pantalla',
+  '• Navegador que usas',
+  '',
+  'Escribe *0* para volver al menu.',
+].join('\n');
+
 // Mapeo de numero a categoria
 const CATEGORY_MAP = {
-  1: 'hardware',
-  2: 'software',
-  3: 'redes',
-  4: 'programacion',
-  5: 'seguridad',
+  3: 'hardware',
+  4: 'software',
+  5: 'redes',
+  6: 'programacion',
+  7: 'seguridad',
 };
 
 // ============================================
@@ -493,6 +574,9 @@ async function processMessage(message, from) {
     case 'main':
       return handleMainMenu(normalized, from);
 
+    case 'claves':
+      return handleClaveSelection(normalized, from);
+
     case 'category':
       return handleTopicSelection(normalized, from, state.category);
 
@@ -506,7 +590,32 @@ async function processMessage(message, from) {
 // ============================================
 
 function handleMainMenu(input, from) {
-  const categoryKey = CATEGORY_MAP[parseInt(input, 10)];
+  const option = parseInt(input, 10);
+
+  // Opcion 1: Problemas con clave
+  if (option === 1) {
+    conversationState.set(from, { menu: 'claves' });
+    return [
+      '🔑 *Problemas con su clave*',
+      '',
+      '¿Que tipo de clave necesitas restablecer?',
+      '',
+      '*1.* Clave Correo',
+      '*2.* Clave WSL Token Password',
+      '*3.* Clave Intranet',
+      '*4.* Clave DBNet',
+      '',
+      'Escribe el numero de la opcion, o *0* para volver al menu.',
+    ].join('\n');
+  }
+
+  // Opcion 2: Problemas con Intranet
+  if (option === 2) {
+    return INTRANET_ANSWER;
+  }
+
+  // Opciones 3-7: Categorias de conocimiento
+  const categoryKey = CATEGORY_MAP[option];
 
   if (!categoryKey) {
     return `No reconozco esa opcion.\n\n${TEXTS.welcome}`;
@@ -516,6 +625,18 @@ function handleMainMenu(input, from) {
   conversationState.set(from, { menu: 'category', category: categoryKey });
 
   return buildTopicList(category);
+}
+
+function handleClaveSelection(input, from) {
+  const claveId = parseInt(input, 10);
+  const clave = CLAVES[claveId];
+
+  if (clave) {
+    conversationState.set(from, { menu: 'idle' });
+    return clave.answer;
+  }
+
+  return `Opcion no valida. Elige un numero del 1 al 4, o escribe *0* para volver.`;
 }
 
 function handleTopicSelection(input, from, categoryKey) {
