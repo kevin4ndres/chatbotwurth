@@ -438,7 +438,7 @@ const KNOWLEDGE = {
 // ============================================
 const TEXTS = {
   welcome: [
-    '¡Hola! 👋 Soy *InfoBot*, tu asistente de informatica.',
+    '¡Hola! 👋 Soy *Informatica Bot*, tu asistente de informatica.',
     '',
     '¿Sobre que tema quieres aprender hoy?',
     '',
