@@ -444,11 +444,11 @@ const TEXTS = {
     '',
     '1️⃣ 🔑 Problemas con su clave',
     '2️⃣ 🌐 Problemas con Intranet',
-    '3️⃣ 🖥️ Hardware',
-    '4️⃣ 💻 Software',
-    '5️⃣ 📡 Redes e Internet',
-    '6️⃣ 👨‍💻 Programacion',
-    '7️⃣ 🔐 Seguridad Informatica',
+    '3️⃣ 📶 Problemas con WiFi',
+    '4️⃣ 🔒 Problemas con VPN',
+    '5️⃣ 🖨️ Problemas de Impresora',
+    '6️⃣ ⚡ Problemas con Speedy',
+    '7️⃣ 🗄️ Problemas con DBNet',
     '',
     '_Escribe el numero de la opcion que deseas._',
   ].join('\n'),
@@ -522,32 +522,95 @@ const CLAVES = {
   },
 };
 
-// Respuesta para problemas de Intranet
-const INTRANET_ANSWER = [
-  '🌐 *Problemas con Intranet*',
-  '',
-  'Problemas comunes y soluciones:',
-  '',
-  '• *No carga la pagina:* Verifica tu conexion a la red corporativa.',
-  '• *Error de acceso:* Asegurate de estar conectado a la VPN si estas fuera de la oficina.',
-  '• *Pagina en blanco:* Limpia la cache del navegador (Ctrl+Shift+Supr).',
-  '• *Error 500:* El servidor puede estar en mantenimiento, intenta mas tarde.',
-  '',
-  'Si el problema persiste, contacta al area de informatica indicando:',
-  '• Descripcion del error',
-  '• Captura de pantalla',
-  '• Navegador que usas',
-  '',
-  'Escribe *0* para volver al menu.',
-].join('\n');
+// Problemas con contacto directo
+const PROBLEMAS = {
+  2: {
+    name: 'Problemas con Intranet',
+    answer: [
+      '🌐 *Problemas con Intranet*',
+      '',
+      'Para resolver tu problema con Intranet, contacta a:',
+      '',
+      '👤 *Rony Castillo*',
+      '📱 +569 76590469',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+  3: {
+    name: 'Problemas con WiFi',
+    answer: [
+      '📶 *Problemas con WiFi*',
+      '',
+      'Para resolver tu problema con WiFi, contacta a:',
+      '',
+      '👤 *Damian Verdugo*',
+      '📱 +569 44772213',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+  4: {
+    name: 'Problemas con VPN',
+    answer: [
+      '🔒 *Problemas con VPN*',
+      '',
+      'Para resolver tu problema con VPN, contacta a:',
+      '',
+      '👤 *Damian Verdugo*',
+      '📱 +569 44772213',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+  5: {
+    name: 'Problemas de Impresora',
+    answer: [
+      '🖨️ *Problemas de Impresora*',
+      '',
+      'Para resolver tu problema con la impresora, contacta a:',
+      '',
+      '👤 *Kevin Arriagada*',
+      '📱 +569 30919502',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+  6: {
+    name: 'Problemas con Speedy',
+    answer: [
+      '⚡ *Problemas con Speedy*',
+      '',
+      'Para resolver tu problema con Speedy, contacta a:',
+      '',
+      '👤 *Julio Castillo*',
+      '📱 +569 57190055',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+  7: {
+    name: 'Problemas con DBNet',
+    answer: [
+      '🗄️ *Problemas con DBNet*',
+      '',
+      'Para resolver tu problema con DBNet, contacta a:',
+      '',
+      '👤 *Julio Castillo*',
+      '📱 +569 57190055',
+      '',
+      'Escribe *0* para volver al menu.',
+    ].join('\n'),
+  },
+};
 
-// Mapeo de numero a categoria
+// Mapeo de numero a categoria (para las opciones de conocimiento)
 const CATEGORY_MAP = {
-  3: 'hardware',
-  4: 'software',
-  5: 'redes',
-  6: 'programacion',
-  7: 'seguridad',
+  8: 'hardware',
+  9: 'software',
+  10: 'redes',
+  11: 'programacion',
+  12: 'seguridad',
 };
 
 // ============================================
@@ -609,12 +672,15 @@ function handleMainMenu(input, from) {
     ].join('\n');
   }
 
-  // Opcion 2: Problemas con Intranet
-  if (option === 2) {
-    return INTRANET_ANSWER;
+  // Opciones 2-7: Problemas con contacto directo
+  if (option >= 2 && option <= 7) {
+    const problema = PROBLEMAS[option];
+    if (problema) {
+      return problema.answer;
+    }
   }
 
-  // Opciones 3-7: Categorias de conocimiento
+  // Opciones 8+: Categorias de conocimiento (si las necesitas)
   const categoryKey = CATEGORY_MAP[option];
 
   if (!categoryKey) {
